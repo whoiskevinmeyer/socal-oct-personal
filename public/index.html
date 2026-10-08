@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SoCal Oct 11-17</title>
+<meta name="description" content="Research share — SoCal Oct 11-17"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+:root{
+  --bg:#0c0e12; --bg2:#12151c; --panel:#161a22; --line:#2a3140;
+  --text:#eef1f6; --muted:#9aa3b5; --accent:#7dd3c0; --accent2:#8ab4ff;
+  --chip:#1c2230; --ok:#3dd68c; --warn:#f0b429;
+  --radius:14px; --shadow:0 18px 50px rgba(0,0,0,.45);
+  --font: "DM Sans", system-ui, sans-serif;
+  --display: "Newsreader", Georgia, serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; font-family:var(--font); background:
+    radial-gradient(1200px 600px at 10% -10%, #1a2438 0%, transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, #1a2a28 0%, transparent 50%),
+    var(--bg);
+  color:var(--text); line-height:1.5;
+}
+a{color:var(--accent2); text-decoration:none}
+a:hover{text-decoration:underline}
+img{max-width:100%; display:block}
+.wrap{max-width:1180px; margin:0 auto; padding:0 1.25rem 4rem}
+
+/* hero */
+.hero{
+  position:relative; min-height:42vh; display:grid; align-items:end;
+  border-bottom:1px solid var(--line); overflow:hidden;
+}
+.hero-bg{
+  position:absolute; inset:0; background:
+    linear-gradient(180deg, rgba(12,14,18,.2), rgba(12,14,18,.92)),
+    url('img/hero.jpg') center/cover no-repeat;
+  filter:saturate(1.05);
+}
+.hero-inner{position:relative; z-index:1; padding:4.5rem 0 2rem; max-width:1180px; margin:0 auto; width:100%; padding-left:1.25rem; padding-right:1.25rem}
+.hero h1{
+  font-family:var(--display); font-weight:600; font-size:clamp(2.1rem, 4.5vw, 3.4rem);
+  letter-spacing:-0.03em; line-height:1.05; margin:0 0 .6rem; max-width:18ch;
+}
+.hero .lede{color:var(--muted); font-size:1.05rem; max-width:52ch; margin:0 0 1.25rem}
+.meta-row{display:flex; flex-wrap:wrap; gap:.5rem}
+.pill{
+  display:inline-flex; align-items:center; gap:.35rem;
+  background:rgba(255,255,255,.06); border:1px solid var(--line);
+  border-radius:999px; padding:.35rem .75rem; font-size:.82rem; color:var(--muted);
+}
+.pill strong{color:var(--text); font-weight:600}
+
+/* sticky filters */
+.filters{
+  position:sticky; top:0; z-index:40;
+  backdrop-filter: blur(14px) saturate(1.2);
+  background:rgba(12,14,18,.82);
+  border-bottom:1px solid var(--line);
+}
+.filters-inner{
+  max-width:1180px; margin:0 auto; padding:.75rem 1.25rem;
+  display:flex; flex-wrap:wrap; gap:.6rem; align-items:center;
+}
+.kind-chips{display:flex; flex-wrap:wrap; gap:.4rem; flex:1}
+.chip{
+  appearance:none; border:1px solid var(--line); background:var(--chip);
+  color:var(--muted); border-radius:999px; padding:.4rem .85rem;
+  font:600 .78rem var(--font); cursor:pointer; transition:.15s ease;
+}
+.chip:hover{border-color:#3d465a; color:var(--text)}
+.chip[aria-pressed="true"]{
+  background:linear-gradient(180deg,#243044,#1a2230);
+  border-color:#4a6fa5; color:#dce8ff;
+  box-shadow:0 0 0 1px rgba(138,180,255,.15);
+}
+.controls{display:flex; flex-wrap:wrap; gap:.5rem; align-items:center}
+.controls input, .controls select{
+  background:var(--panel); border:1px solid var(--line); color:var(--text);
+  border-radius:10px; padding:.45rem .7rem; font:500 .85rem var(--font);
+}
+.controls input{min-width:11rem}
+.count{color:var(--muted); font-size:.8rem; white-space:nowrap}
+
+/* layout */
+.grid-main{
+  display:grid; grid-template-columns: 1.15fr .85fr; gap:1.25rem; margin-top:1.25rem;
+}
+@media (max-width: 920px){ .grid-main{grid-template-columns:1fr} .map-panel{order:-1; position:relative!important; top:auto} }
+
+.map-panel{
+  position:sticky; top:4.2rem; align-self:start;
+  background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+  overflow:hidden; box-shadow:var(--shadow); min-height:420px;
+}
+#map{height:min(62vh,560px); width:100%}
+.map-legend{padding:.65rem .85rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem}
+
+.section{margin:2rem 0 0}
+.section h2{
+  font-family:var(--display); font-size:1.55rem; letter-spacing:-0.02em;
+  margin:0 0 .85rem; font-weight:600;
+}
+
+.cards{
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:.9rem;
+}
+.card{
+  background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+  overflow:hidden; display:flex; flex-direction:column;
+  transition: transform .15s ease, border-color .15s ease;
+  cursor:pointer;
+}
+.card:hover{transform:translateY(-2px); border-color:#3d4a63}
+.card:focus-visible{outline:2px solid var(--accent2); outline-offset:2px}
+.card .media{aspect-ratio:16/10; background:#0a0c10; overflow:hidden}
+.card .media img{width:100%; height:100%; object-fit:cover}
+.card .body{padding:.85rem .95rem 1rem; display:flex; flex-direction:column; gap:.35rem; flex:1}
+.card .kicker{font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent); font-weight:700}
+.card h3{margin:0; font-size:1.02rem; letter-spacing:-0.01em}
+.card .addr{color:var(--muted); font-size:.8rem}
+.card .cap{color:#c5ccd8; font-size:.86rem}
+.card .row{display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:.5rem}
+.rating{font-variant-numeric:tabular-nums; font-weight:700; color:#f3d27a; font-size:.9rem}
+.card .links{display:flex; gap:.55rem; font-size:.8rem}
+
+.locked{
+  margin:1.25rem 0 0; padding:1.1rem 1.2rem; border-radius:var(--radius);
+  border:1px solid #2f4a3a; background:linear-gradient(135deg,#14201a,#12151c);
+}
+.locked h2{margin:0 0 .4rem; font-size:1.2rem}
+.locked p{margin:.25rem 0; color:var(--muted)}
+.locked code{color:#b7f0d0; font-size:.85rem}
+
+.facts{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:.75rem; margin-top:1rem;
+}
+.fact{
+  background:var(--bg2); border:1px solid var(--line); border-radius:12px; padding:.9rem 1rem;
+}
+.fact b{display:block; font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:.25rem}
+.fact span{font-size:1.05rem; font-weight:600}
+
+footer{margin-top:3rem; padding:1.5rem 0; border-top:1px solid var(--line); color:var(--muted); font-size:.8rem}
+
+.leaflet-container{background:#0e1218; font:12px var(--font)}
+.pin-dot{
+  width:12px; height:12px; border-radius:50%; border:2px solid #fff;
+  box-shadow:0 0 0 2px rgba(0,0,0,.35);
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-bg" role="presentation"></div>
+  <div class="hero-inner">
+    <h1>SoCal Oct 11-17</h1>
+    <p class="lede" id="lede">Replace this lede. Lead with the decision, not the research process. Cite live rates and locked choices.</p>
+    <div class="meta-row">
+      <span class="pill"><strong id="meta-when">2026-10-07</strong></span>
+      <span class="pill" id="meta-where">Location</span>
+      <span class="pill" id="meta-status">Draft</span>
+    </div>
+  </div>
+</header>
+
+<div class="filters" role="search" aria-label="Filter places">
+  <div class="filters-inner">
+    <div class="kind-chips" id="kindChips"></div>
+    <div class="controls">
+      <input id="q" type="search" placeholder="Search name or note" autocomplete="off"/>
+      <select id="minRating" aria-label="Minimum rating">
+        <option value="0">Any rating</option>
+        <option value="3.5">≥ 3.5</option>
+        <option value="4">≥ 4.0</option>
+        <option value="4.5">≥ 4.5</option>
+      </select>
+      <select id="sort" aria-label="Sort">
+        <option value="kind">Kind</option>
+        <option value="rating">Rating</option>
+        <option value="name">Name</option>
+      </select>
+      <span class="count" id="count"></span>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <section class="locked" id="locked" hidden>
+    <h2 id="lockedTitle">Locked decision</h2>
+    <p id="lockedBody"></p>
+  </section>
+
+  <section class="facts" id="facts"></section>
+
+  <div class="grid-main">
+    <div>
+      <section class="section">
+        <h2>Places</h2>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+    <aside class="map-panel">
+      <div id="map" aria-label="Map of places"></div>
+      <div class="map-legend">Pins filter with the chips. Click a card or pin for Maps / site.</div>
+    </aside>
+  </div>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* ========== EDIT THIS DATA ========== */
+const META = {
+  lede: "Replace this lede. Lead with the decision, not the research process.",
+  when: "2026-10-07",
+  where: "City, ST",
+  status: "Ready to share",
+  locked: null, // { title, body_html } or null
+  facts: [
+    // { label: "Flights", value: "DL 2581 / DL 2689" },
+  ],
+};
+
+/** @type {Array<{
+ *  id:string, kind:string, name:string, addr?:string, caption?:string,
+ *  rating?:number|string, lat?:number, lon?:number, img?:string,
+ *  color?:string, gmaps?:string, site?:string
+ * }>} */
+const PLACES = [
+  // Example — delete and replace with real research:
+  // {
+  //   id: "example",
+  //   kind: "hotel",
+  //   name: "Example Inn",
+  //   addr: "123 Main",
+  //   caption: "2× King · locked",
+  //   rating: 8.4,
+  //   lat: 40.76, lon: -111.89,
+  //   img: "img/hero.jpg",
+  //   color: "#7fb8ff",
+  //   gmaps: "https://www.google.com/maps/search/?api=1&query=Example",
+  //   site: "https://example.com"
+  // },
+];
+
+const KIND_LABEL = {
+  hotel: "Hotel", office: "Office", airport: "Airport",
+  cafe: "Cafes", brewery: "Breweries", bar: "Bars",
+  eat: "Food", do: "Do", other: "Other",
+};
+const KIND_ORDER = ["hotel","office","airport","cafe","brewery","bar","eat","do","other"];
+/* ========== END EDIT ========== */
+
+const el = (t, cls, html) => {
+  const n = document.createElement(t);
+  if (cls) n.className = cls;
+  if (html != null) n.innerHTML = html;
+  return n;
+};
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
+
+function bootMeta() {
+  document.getElementById("lede").textContent = META.lede || "";
+  document.getElementById("meta-when").textContent = META.when || "";
+  document.getElementById("meta-where").textContent = META.where || "";
+  document.getElementById("meta-status").textContent = META.status || "";
+  if (META.locked && META.locked.body_html) {
+    const box = document.getElementById("locked");
+    box.hidden = false;
+    document.getElementById("lockedTitle").textContent = META.locked.title || "Locked decision";
+    document.getElementById("lockedBody").innerHTML = META.locked.body_html;
+  }
+  const facts = document.getElementById("facts");
+  (META.facts || []).forEach(f => {
+    const d = el("div", "fact");
+    d.appendChild(el("b", null, esc(f.label)));
+    const s = el("span"); s.textContent = f.value; d.appendChild(s);
+    facts.appendChild(d);
+  });
+}
+
+let activeKind = "all";
+let map, markers = {};
+
+function kindsPresent() {
+  const s = new Set(PLACES.map(p => p.kind || "other"));
+  return KIND_ORDER.filter(k => s.has(k)).concat([...s].filter(k => !KIND_ORDER.includes(k)));
+}
+
+function buildChips() {
+  const host = document.getElementById("kindChips");
+  host.innerHTML = "";
+  const all = el("button", "chip");
+  all.type = "button"; all.textContent = "All"; all.dataset.kind = "all"; all.setAttribute("aria-pressed", "true");
+  host.appendChild(all);
+  kindsPresent().forEach(k => {
+    const b = el("button", "chip");
+    b.type = "button"; b.textContent = KIND_LABEL[k] || k; b.dataset.kind = k; b.setAttribute("aria-pressed", "false");
+    host.appendChild(b);
+  });
+  host.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => {
+    activeKind = b.dataset.kind;
+    host.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+    render();
+  }));
+}
+
+function numRating(p) {
+  const n = parseFloat(p.rating);
+  return Number.isFinite(n) ? n : null;
+}
+
+function filtered() {
+  const q = (document.getElementById("q").value || "").trim().toLowerCase();
+  const minR = parseFloat(document.getElementById("minRating").value) || 0;
+  const sort = document.getElementById("sort").value;
+  let list = PLACES.filter(p => {
+    if (activeKind !== "all" && (p.kind || "other") !== activeKind) return false;
+    if (minR > 0) {
+      const r = numRating(p);
+      if (r == null || r < minR) return false;
+    }
+    if (q) {
+      const hay = `${p.name} ${p.addr||""} ${p.caption||""} ${p.kind||""}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  list = list.slice().sort((a,b) => {
+    if (sort === "name") return (a.name||"").localeCompare(b.name||"");
+    if (sort === "rating") return (numRating(b)||-1) - (numRating(a)||-1);
+    const ka = KIND_ORDER.indexOf(a.kind); const kb = KIND_ORDER.indexOf(b.kind);
+    return (ka < 0 ? 99 : ka) - (kb < 0 ? 99 : kb) || (a.name||"").localeCompare(b.name||"");
+  });
+  return list;
+}
+
+function cardNode(p) {
+  const a = el("article", "card");
+  a.tabIndex = 0;
+  a.dataset.id = p.id;
+  const media = el("div", "media");
+  if (p.img) {
+    const img = document.createElement("img");
+    img.src = p.img; img.alt = p.name; img.loading = "lazy";
+    media.appendChild(img);
+  } else {
+    media.style.background = `linear-gradient(135deg, ${p.color||"#2a3548"}, #0c0e12)`;
+  }
+  a.appendChild(media);
+  const body = el("div", "body");
+  body.appendChild(el("div", "kicker", esc(KIND_LABEL[p.kind] || p.kind || "")));
+  body.appendChild(el("h3", null, esc(p.name)));
+  if (p.addr) body.appendChild(el("div", "addr", esc(p.addr)));
+  if (p.caption) body.appendChild(el("div", "cap", esc(p.caption)));
+  const row = el("div", "row");
+  const r = numRating(p);
+  row.appendChild(el("div", "rating", r != null ? String(r) : "—"));
+  const links = el("div", "links");
+  if (p.gmaps) {
+    const g = document.createElement("a"); g.href = p.gmaps; g.target = "_blank"; g.rel = "noopener"; g.textContent = "Maps";
+    g.addEventListener("click", e => e.stopPropagation());
+    links.appendChild(g);
+  }
+  if (p.site) {
+    const s = document.createElement("a"); s.href = p.site; s.target = "_blank"; s.rel = "noopener"; s.textContent = "Site";
+    s.addEventListener("click", e => e.stopPropagation());
+    links.appendChild(s);
+  }
+  row.appendChild(links);
+  body.appendChild(row);
+  a.appendChild(body);
+  const go = () => {
+    if (p.lat != null && map && markers[p.id]) {
+      map.setView([p.lat, p.lon], 15, {animate:true});
+      markers[p.id].openPopup();
+    } else if (p.gmaps) window.open(p.gmaps, "_blank", "noopener");
+  };
+  a.addEventListener("click", go);
+  a.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }});
+  return a;
+}
+
+function ensureMap() {
+  if (map) return;
+  map = L.map("map", {scrollWheelZoom:false}).setView([39.5, -98.3], 4);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    attribution: "&copy; OSM &copy; CARTO", maxZoom: 19
+  }).addTo(map);
+}
+
+function renderMap(list) {
+  ensureMap();
+  Object.values(markers).forEach(m => map.removeLayer(m));
+  markers = {};
+  const bounds = [];
+  list.forEach(p => {
+    if (p.lat == null || p.lon == null) return;
+    const color = p.color || "#8ab4ff";
+    const icon = L.divIcon({
+      className: "",
+      html: `<div class="pin-dot" style="background:${color}"></div>`,
+      iconSize: [12,12], iconAnchor: [6,6]
+    });
+    const m = L.marker([p.lat, p.lon], {icon}).addTo(map);
+    const bits = [
+      `<strong>${esc(p.name)}</strong>`,
+      p.rating != null ? `Rating ${esc(p.rating)}` : "",
+      p.caption ? esc(p.caption) : "",
+      p.gmaps ? `<a href="${esc(p.gmaps)}" target="_blank" rel="noopener">Open in Maps</a>` : ""
+    ].filter(Boolean).join("<br/>");
+    m.bindPopup(bits);
+    markers[p.id] = m;
+    bounds.push([p.lat, p.lon]);
+  });
+  if (bounds.length) map.fitBounds(bounds, {padding:[28,28], maxZoom: 13});
+  setTimeout(() => map.invalidateSize(), 50);
+}
+
+function render() {
+  const list = filtered();
+  document.getElementById("count").textContent = `${list.length} / ${PLACES.length}`;
+  const host = document.getElementById("cards");
+  host.innerHTML = "";
+  if (!list.length) {
+    host.appendChild(el("p", null, "No places match. Widen filters or add PLACES in the page script."));
+  } else {
+    list.forEach(p => host.appendChild(cardNode(p)));
+  }
+  renderMap(list);
+}
+
+bootMeta();
+buildChips();
+["q","minRating","sort"].forEach(id => document.getElementById(id).addEventListener("input", render));
+render();
+</script>
+</body>
+</html>
