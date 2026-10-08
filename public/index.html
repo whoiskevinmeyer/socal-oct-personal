@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SoCal Oct 11-17</title>
-<meta name="description" content="Research share — SoCal Oct 11-17"/>
+<title>SoCal · Kevin + Daniella · Oct 11–17 2026</title>
+<meta name="description" content="Personal SoCal plan for Kevin, Daniella, and Rocko. Family in Woodland Hills, Ocean Beach Hotel, compact LAX to SAN."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet"/>
@@ -160,7 +160,7 @@ footer{margin-top:3rem; padding:1.5rem 0; border-top:1px solid var(--line); colo
 <header class="hero">
   <div class="hero-bg" role="presentation"></div>
   <div class="hero-inner">
-    <h1>SoCal Oct 11-17</h1>
+    <h1>SoCal · Kevin + Daniella</h1>
     <p class="lede" id="lede">Replace this lede. Lead with the decision, not the research process. Cite live rates and locked choices.</p>
     <div class="meta-row">
       <span class="pill"><strong id="meta-when">2026-10-07</strong></span>
@@ -199,6 +199,11 @@ footer{margin-top:3rem; padding:1.5rem 0; border-top:1px solid var(--line); colo
 
   <section class="facts" id="facts"></section>
 
+  <section class="section" id="plan">
+    <h2>Day by day</h2>
+    <div class="cards" id="days"></div>
+  </section>
+
   <div class="grid-main">
     <div>
       <section class="section">
@@ -217,13 +222,20 @@ footer{margin-top:3rem; padding:1.5rem 0; border-top:1px solid var(--line); colo
 <script>
 /* ========== EDIT THIS DATA ========== */
 const META = {
-  lede: "Replace this lede. Lead with the decision, not the research process.",
-  when: "2026-10-07",
-  where: "City, ST",
-  status: "Ready to share",
-  locked: null, // { title, body_html } or null
+  lede: "You two plus Rocko. Family house in Woodland Hills first. Compact at LAX Sunday. Ocean Beach Hotel Wednesday through Saturday. Daniella and Rocko skip the customer visits. Kevin meets Uli and Sean at Hyatt Irvine Tuesday morning.",
+  when: "Sun 11 Oct – Sat 17 Oct 2026",
+  where: "Woodland Hills · Irvine · Ocean Beach",
+  status: "Locked for you two",
+  locked: {
+    title: "Stay",
+    body_html: "<strong>Sun 11 – Wed 14:</strong> family house, 20135 Hatteras St, Woodland Hills.<br/><strong>Wed 14 – Sat 17:</strong> Ocean Beach Hotel, 5080 Newport Ave. Pet-friendly (2 dogs). Team also here Wed–Fri. Extra Friday night is yours so you are not rushing the Saturday Alaska flight.<br/><a href=\"https://obhotel.com/\" target=\"_blank\" rel=\"noopener\">Book Ocean Beach Hotel</a> · <a href=\"https://www.hyatt.com/en-US/hotel/california/hyatt-regency-irvine/laxri\" target=\"_blank\" rel=\"noopener\">Uli/Sean hotel (Hyatt Irvine)</a> — you do not stay there."
+  },
   facts: [
-    // { label: "Flights", value: "DL 2581 / DL 2689" },
+    { label: "Out", value: "Sun 11 · United 637 · AUS 2:01p → LAX 3:17p" },
+    { label: "Home", value: "Sat 17 · Alaska · SAN 2:08p → AUS 7:19p" },
+    { label: "Car", value: "One compact. Pickup LAX Sunday after 637. Drop SAN Saturday before 2:08p. ~$340–360 one-way. Airport counter. Do not split Mon–Wed." },
+    { label: "Rocko", value: "Family house + Ocean Beach Hotel only. Not at MatterHackers, SNL, or Incept3D." },
+    { label: "Dinner", value: "Wed 14 Oct 7:30p · Malka, Beverly Hills. Then drive to Ocean Beach (~2h)." },
   ],
 };
 
@@ -233,20 +245,135 @@ const META = {
  *  color?:string, gmaps?:string, site?:string
  * }>} */
 const PLACES = [
-  // Example — delete and replace with real research:
-  // {
-  //   id: "example",
-  //   kind: "hotel",
-  //   name: "Example Inn",
-  //   addr: "123 Main",
-  //   caption: "2× King · locked",
-  //   rating: 8.4,
-  //   lat: 40.76, lon: -111.89,
-  //   img: "img/hero.jpg",
-  //   color: "#7fb8ff",
-  //   gmaps: "https://www.google.com/maps/search/?api=1&query=Example",
-  //   site: "https://example.com"
-  // },
+  {
+    id: "family",
+    kind: "hotel",
+    name: "Family house",
+    addr: "20135 Hatteras St, Woodland Hills CA 91367",
+    caption: "Sun–Wed nights. You, Daniella, Rocko. Kevin leaves Tuesday morning for Irvine.",
+    lat: 34.1755531, lon: -118.6282063,
+    img: "img/woodland2.jpg",
+    color: "#7fb8ff",
+    gmaps: "https://www.google.com/maps/search/?api=1&query=20135+Hatteras+St+Woodland+Hills+CA"
+  },
+  {
+    id: "obhotel",
+    kind: "hotel",
+    name: "Ocean Beach Hotel",
+    addr: "5080 Newport Ave, San Diego CA 92107",
+    caption: "Wed 14 check-in. Stay through Sat 17. 2 dogs ok. ~$192/nt when last checked. Team also here Wed–Fri.",
+    lat: 32.7479954, lon: -117.2524187,
+    img: "img/ob-aerial.jpg",
+    color: "#7dd3c0",
+    gmaps: "https://www.google.com/maps/search/?api=1&query=5080+Newport+Ave+San+Diego+CA+92107",
+    site: "https://obhotel.com/"
+  },
+  {
+    id: "hyatt",
+    kind: "hotel",
+    name: "Hyatt Regency Irvine (team only)",
+    addr: "17900 Jamboree Rd, Irvine CA 92614",
+    caption: "Uli and Sean Mon–Wed. Kevin meets them here Tuesday morning. You do not stay here.",
+    lat: 33.6840, lon: -117.8524,
+    img: "img/irvine.jpg",
+    color: "#8ab4ff",
+    gmaps: "https://www.google.com/maps/search/?api=1&query=Hyatt+Regency+Irvine+17900+Jamboree",
+    site: "https://www.hyatt.com/en-US/hotel/california/hyatt-regency-irvine/laxri"
+  },
+  {
+    id: "lax",
+    kind: "airport",
+    name: "LAX · pickup",
+    addr: "Los Angeles International",
+    caption: "United 637 lands 3:17p Sunday. Compact at the airport counter. Drive to Woodland Hills (~45–70 min).",
+    lat: 33.9416, lon: -118.4085,
+    img: "img/lax.jpg",
+    color: "#f0b429",
+    gmaps: "https://www.google.com/maps/search/?api=1&query=LAX+car+rental"
+  },
+  {
+    id: "san",
+    kind: "airport",
+    name: "SAN · drop + home",
+    addr: "San Diego International",
+    caption: "Drop compact Saturday before the 2:08p Alaska. 12 min from Ocean Beach Hotel. Be at SAN 2 hours early.",
+    lat: 32.7338, lon: -117.1933,
+    img: "img/san.jpg",
+    color: "#f0b429",
+    gmaps: "https://www.google.com/maps/search/?api=1&query=SAN+car+rental"
+  },
+  {
+    id: "mh",
+    kind: "office",
+    name: "MatterHackers (Kevin only)",
+    addr: "20321 Valencia Circle, Lake Forest CA 92630",
+    caption: "Tue 13 Oct 10:00. Daniella and Rocko stay in Woodland Hills.",
+    lat: 33.6670186, lon: -117.6615865,
+    color: "#c084fc",
+    gmaps: "https://www.google.com/maps/search/?api=1&query=20321+Valencia+Circle+Lake+Forest+CA"
+  },
+  {
+    id: "snl",
+    kind: "office",
+    name: "SNL Creative (Kevin only)",
+    addr: "11235 Knott Ave Suite A, Cypress CA 90630",
+    caption: "Tue 13 Oct 1:00p. After MatterHackers.",
+    lat: 33.7998067, lon: -118.0116704,
+    color: "#c084fc",
+    gmaps: "https://www.google.com/maps/search/?api=1&query=11235+Knott+Ave+Cypress+CA"
+  },
+  {
+    id: "incept",
+    kind: "office",
+    name: "Incept3D (Kevin only)",
+    addr: "6915 Flanders Drive, San Diego CA 92121",
+    caption: "Thu 15 Oct 10:00. Leave Ocean Beach Hotel 9:10. Daniella and Rocko stay at the hotel / beach.",
+    lat: 32.9035317, lon: -117.1742368,
+    color: "#c084fc",
+    gmaps: "https://www.google.com/maps/search/?api=1&query=6915+Flanders+Drive+San+Diego+CA"
+  },
+  {
+    id: "malka",
+    kind: "eat",
+    name: "Malka · family dinner",
+    addr: "Beverly Hills",
+    caption: "Wed 14 Oct 7:30p. After dinner drive to Ocean Beach Hotel (~2h).",
+    lat: 34.0736, lon: -118.4004,
+    color: "#fb7185",
+    gmaps: "https://www.google.com/maps/search/?api=1&query=Malka+Beverly+Hills"
+  },
+  {
+    id: "hodads",
+    kind: "eat",
+    name: "Hodad's",
+    addr: "5010 Newport Ave, Ocean Beach",
+    caption: "2 min walk from the hotel. Burgers. The one to get.",
+    lat: 32.7486, lon: -117.2520,
+    img: "img/hodads.jpg",
+    color: "#fb7185",
+    gmaps: "https://www.google.com/maps/search/?api=1&query=Hodads+5010+Newport+Ocean+Beach"
+  },
+  {
+    id: "pier",
+    kind: "do",
+    name: "Ocean Beach Pier",
+    addr: "Ocean Beach, San Diego",
+    caption: "2 min walk. Kill time Thursday after Incept or Friday with Rocko.",
+    lat: 32.7490, lon: -117.2535,
+    img: "img/ob-pier.jpg",
+    color: "#7dd3c0",
+    gmaps: "https://www.google.com/maps/search/?api=1&query=Ocean+Beach+Pier+San+Diego"
+  },
+];
+
+const DAYS = [
+  { name: "Sun 11", caption: "United 637 lands LAX 3:17p. Compact at the airport. Drive to 20135 Hatteras. Family night." },
+  { name: "Mon 12", caption: "Woodland Hills with family and Rocko. Uli and Sean land LAX and go to Hyatt Irvine on their own compact. You do not pick them up." },
+  { name: "Tue 13", caption: "Kevin leaves Woodland Hills early. Meet at Hyatt Irvine ~8:45. MatterHackers 10:00. SNL 1:00p. Daniella + Rocko stay in Woodland Hills. Kevin returns to Hatteras after SNL." },
+  { name: "Wed 14", caption: "Open day. Malka Beverly Hills 7:30p. After dinner drive to Ocean Beach Hotel. Check in. Rocko allowed." },
+  { name: "Thu 15", caption: "Kevin leaves hotel 9:10 for Incept3D 10:00. Daniella + Rocko: pier, Hodad's, beach. Night at Ocean Beach Hotel." },
+  { name: "Fri 16", caption: "Uli and Sean checkout and fly SAN. You keep the room. Extra night so Saturday is not a scramble." },
+  { name: "Sat 17", caption: "Drop compact at SAN. Alaska 2:08p to AUS 7:19p. Be at SAN by noon." },
 ];
 
 const KIND_LABEL = {
@@ -283,6 +410,18 @@ function bootMeta() {
     const s = el("span"); s.textContent = f.value; d.appendChild(s);
     facts.appendChild(d);
   });
+  const days = document.getElementById("days");
+  if (days && typeof DAYS !== "undefined") {
+    DAYS.forEach(day => {
+      const a = el("article", "card");
+      const body = el("div", "body");
+      body.appendChild(el("div", "kicker", "Day"));
+      body.appendChild(el("h3", null, esc(day.name)));
+      body.appendChild(el("div", "cap", esc(day.caption)));
+      a.appendChild(body);
+      days.appendChild(a);
+    });
+  }
 }
 
 let activeKind = "all";
